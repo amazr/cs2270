@@ -26,7 +26,15 @@ int insertIntoSortedArray(int myArray[], int numEntries, int newValue) {
 
 int main(int argc, char **argv) {
 
-    std::string fileName = argv[1];
+    std::string fileName;
+    if (argc < 2) {
+        std::cout << "Not enough arguments. Please supply a file name: ";
+        std::cin >> fileName;
+    }
+    else {
+        fileName = argv[1];
+    }
+
     int myArray[100];
     int myArEntries = 0;
     std::ifstream ifs;
@@ -35,6 +43,7 @@ int main(int argc, char **argv) {
 
     if (!ifs.is_open()) {
         std::cout << "Failed to open the file." << std::endl;
+        return 0;
     }
     
     std::string line;
@@ -51,4 +60,6 @@ int main(int argc, char **argv) {
         }
         std::cout << std::endl;
 	}
+
+    ifs.close();
 }
