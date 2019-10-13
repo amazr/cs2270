@@ -74,7 +74,28 @@ void CountryNetwork::insertCountry(Country* previous, string countryName) {
  */
 //Come back to this, think temp->next->name might be able to make this look nicer... WRITE IT DOWN
 void CountryNetwork::deleteCountry(string countryName) {
-    
+    Country *temp = head;
+
+    //case if the first node is the country 
+    if (head->name == countryName) {
+        head = head->next;
+        delete temp;
+        return;
+    }
+
+    while(true) {
+        if (temp->next == NULL) {
+            cout << "Country does not exist." << endl;
+            return;
+        }
+        else if (temp->next->name == countryName) {
+            Country *toDelete = temp->next;
+            temp->next = temp->next->next;
+            delete toDelete;
+            return;
+        }
+        temp = temp->next;
+    }
 }
 
 /*
@@ -83,6 +104,13 @@ void CountryNetwork::deleteCountry(string countryName) {
  * @return none
  */
 void CountryNetwork::loadDefaultSetup() {
+    deleteEntireNetwork();
+    insertCountry(head, "United States");
+    insertCountry(searchNetwork("United States"), "Canada");
+    insertCountry(searchNetwork("Canada"), "Brazil");
+    insertCountry(searchNetwork("Brazil"), "India");
+    insertCountry(searchNetwork("India"), "China");
+    insertCountry(searchNetwork("China"), "Australia");
 }
 
 
@@ -119,6 +147,25 @@ Country* CountryNetwork::searchNetwork(string countryName) {
  * @return none
  */
 void CountryNetwork::deleteEntireNetwork() {
+    if (isEmpty()) {
+        return;
+    }
+
+    Country *traverse = head;
+    Country *toDelete = traverse;
+    head = NULL;
+
+    while(true) {
+        if (traverse == NULL) {
+            cout << "Deleted network" << endl;
+            return;
+        }
+        cout << "deleting: " << toDelete->name << endl;
+        traverse = traverse->next;
+        delete toDelete;
+        toDelete = traverse;
+
+    }
 }
 
 /*
@@ -127,7 +174,51 @@ void CountryNetwork::deleteEntireNetwork() {
  * @param number elements to be moved from the end of the list to the beginning
  * @return none
  */
- void CountryNetwork :: rotateNetwork(int n) {
+void CountryNetwork :: rotateNetwork(int n) {  
+
+    if (isEmpty()) {
+        cout << "Linked List is Empty" << endl;
+        return;
+    }
+
+    int L = 0;
+    Country *temp = head;
+    Country *lastNode;
+
+    while (true) {
+        if (temp == NULL) {
+            break;
+        }
+        else {
+            temp = temp->next;
+            L++;
+        }
+    }
+
+    if (n > L || n < 1) {
+        cout << "Rotate not possible" << endl;
+        return;
+    }
+
+    for (int i = 0; i < n; i++) {
+        lastNode = head;
+        temp = head;
+        while (true) {
+            if (lastNode->next == NULL) {
+                break;
+            }
+            else {
+                lastNode = lastNode->next;
+            }
+        }
+        head = head->next;
+        lastNode->next = temp;
+        temp->next = NULL;
+    }
+
+    cout << "Rotate Complete" << endl;
+    return;
+    
 }
 
 /*
@@ -135,6 +226,44 @@ void CountryNetwork::deleteEntireNetwork() {
  * @param ptr head of list
  */
 void CountryNetwork::reverseEntireNetwork() {
+
+    if (isEmpty()) {
+        return;
+    }
+
+    Country *tempHead = head;
+
+    int L = 0;
+    while (true) {
+        if (tempHead->next == NULL) {
+            break;
+        }
+        else {
+            tempHead = tempHead->next;
+            L++;
+        }
+    }
+
+    Country *temp = tempHead;
+    Country *prevTemp = head;
+
+    for (int i = 0; i < L; i++) {
+        if (temp == head) {
+            break;
+        }
+        while (true) {
+            if (prevTemp->next == temp) {
+                temp->next = prevTemp;
+                temp = prevTemp;
+                break;
+            }
+            prevTemp = prevTemp->next;
+        }
+        prevTemp = head;
+    }
+
+    head = tempHead;
+    temp->next = NULL;
 }
 
 /*
@@ -142,5 +271,23 @@ void CountryNetwork::reverseEntireNetwork() {
  * @param ptr head of list
  */
 void CountryNetwork::printPath() {
+    Country *temp = head;
 
+    cout << "== CURRENT PATH ==" << endl;
+
+    if (temp == NULL) {
+        cout << "nothing in path" << endl << "===" << endl;
+        return;
+    }
+
+    while (true) {
+        if (temp == NULL) {
+            cout << "NULL" << endl << "===" << endl;
+            return;
+        }
+        else {
+            cout << temp->name << " -> ";
+            temp = temp->next;
+        }
+    }
 }

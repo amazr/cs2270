@@ -30,16 +30,7 @@ int main(int argc, char* argv[])
             else if (stoi(option) == 2) {   //Just calls the printPath function
                 CountryNet.printPath();
             }
-            else if (stoi(option) == 3) {
-                string message, name;
-                cin.ignore();
-                cout << "Enter name of the country to receive the message: " << endl;
-                getline(cin, name);
-                cout << "Enter the message to send: " << endl << endl;
-                getline(cin, message);
-                CountryNet.transmitMsg(name, message);
-            }
-            else if(stoi(option) == 4) {
+            else if(stoi(option) == 3) {    //add country
                 string newCountry, prevCountry;
                 cin.ignore();
                 cout << "Enter a new country name: " << endl;
@@ -66,8 +57,40 @@ int main(int argc, char* argv[])
 
                 CountryNet.printPath();
             }
-            else if (stoi(option) == 5) {
-                cout << "Quitting..." << endl;
+            else if(stoi(option) == 4) {    //Delete a country
+                string toDelete;
+                cin.ignore();
+                cout << "Enter a country name: " << endl;
+                getline(cin, toDelete);
+                CountryNet.deleteCountry(toDelete);
+                CountryNet.printPath();
+            }
+            else if(stoi(option) == 5) {    //Reverse Network
+                CountryNet.reverseEntireNetwork();
+                CountryNet.printPath();
+            }
+            else if(stoi(option) == 6) {    //Rotate Network
+                string numRotationsStr;
+                int numRotations;
+                cin.ignore();
+                cout << "Enter the count of values to be rotated: " << endl;
+                getline(cin, numRotationsStr);
+                numRotations = stoi(numRotationsStr);
+                CountryNet.rotateNetwork(numRotations);
+                CountryNet.printPath();
+            }
+            else if(stoi(option) == 7) {    //Delete the network
+                cout << "Network before deletion" << endl;
+                CountryNet.printPath();
+                CountryNet.deleteEntireNetwork();
+                cout << "Network after deletion" << endl;
+                CountryNet.printPath();
+            }
+            else if (stoi(option) == 8) {   //quit
+                cout << "Quitting... cleaning up path:" << endl;
+                CountryNet.printPath();
+                CountryNet.deleteEntireNetwork();
+                cout << "Path cleaned" << endl;
                 cout << "Goodbye!" << endl;
                 return 0;
             }
