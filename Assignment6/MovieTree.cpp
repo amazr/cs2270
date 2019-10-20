@@ -147,7 +147,8 @@ void MovieTree::averageRating() {
     return;
   }
 
-  vector<float> ratings = getAverageRating(root, ratings);
+  vector<float> ratings;
+  ratings = getAverageRating(root, ratings);
   float average = 0;
   for (auto i: ratings) {
     average += i;
