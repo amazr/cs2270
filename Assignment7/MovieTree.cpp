@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <vector>
 
+
 using namespace std;
 
 //Helper functions
@@ -75,9 +76,8 @@ TreeNode* deleteNode(TreeNode* currNode, char value)
     //TODO Case : No child
     if(currNode->leftChild == NULL && currNode->rightChild == NULL)
     {
-        delete currNode;
-        return NULL;
-
+      delete currNode;
+      return NULL;
     }
     //TODO Case : Only right child
     else if(currNode->leftChild == NULL)
@@ -177,7 +177,6 @@ void MovieTree::addMovie(int ranking, string title, int year, float rating) {
 
       while (temp != NULL) {
         if (temp->title.compare(title) < 0) { //if the current nodes title comes before the title alphabetically
-          cout << temp->title << " comes before " << title << endl;
           early = true;
           break;
         }
@@ -190,12 +189,10 @@ void MovieTree::addMovie(int ranking, string title, int year, float rating) {
 
       LLMovieNode *nn = new LLMovieNode(ranking, title, year, rating);
       if (early) {
-        cout << "adding early " << title << endl;
         nn->next = temp->next;
         temp->next = nn;
       }
       else {
-        cout << "adding " << title << endl;
         nn->next = current->head;
         current->head = nn;
       }
@@ -238,16 +235,17 @@ void MovieTree::deleteMovie(std::string title) {
     LLMovieNode *prev = NULL;
     while(temp != NULL) {
       if (temp->title == title) { //Movie found
-        if (prev == NULL) {
-          if (temp->next == NULL) {
+        if (prev == NULL) {       //if the movie found is the head of the linked list
+          if (temp->next == NULL) { //If the linked list ONLY contains the movie found
             current->head = NULL;
-            root=deleteNode(root,current->titleChar);
-            delete temp;
-            return;
+            root = deleteNode(root,current->titleChar);
+            
           }
-          else {
+          else {    //if the movie is NOT the only movie in the linked list
             current->head = temp->next;
           }
+          delete temp;
+          return;
         }
         else {
           if (temp->next == NULL) {
