@@ -83,7 +83,6 @@ TreeNode* deleteNode(TreeNode* currNode, char value)
     {
         //Replace with Minimum from right subtree
         currNode->titleChar = getMinValueNode(currNode->rightChild)->titleChar;
-        currNode->head = getMinValueNode(currNode->rightChild)->head;
         currNode->rightChild = deleteNode(currNode->rightChild, currNode->titlrChar);
     }
 
