@@ -85,6 +85,7 @@ TreeNode* deleteNode(TreeNode* currNode, char value)
         currNode->titleChar = currNode->rightChild->titleChar;
         currNode->head = currNode->rightChild->head;
         if (currNode->rightChild->rightChild == NULL) {
+          delete currNode->rightChild;
           currNode->rightChild = NULL;
         }
         else {
@@ -97,6 +98,7 @@ TreeNode* deleteNode(TreeNode* currNode, char value)
         currNode->titleChar = currNode->leftChild->titleChar;
         currNode->head = currNode->leftChild->head;
         if (currNode->leftChild->leftChild == NULL) {
+          delete currNode->rightChild;
           currNode->leftChild = NULL;
         }
         else {
@@ -238,8 +240,7 @@ void MovieTree::deleteMovie(std::string title) {
         if (prev == NULL) {       //if the movie found is the head of the linked list
           if (temp->next == NULL) { //If the linked list ONLY contains the movie found
             current->head = NULL;
-            root = deleteNode(root,current->titleChar);
-            
+            root = deleteNode(root,current->titleChar); 
           }
           else {    //if the movie is NOT the only movie in the linked list
             current->head = temp->next;
@@ -260,6 +261,6 @@ void MovieTree::deleteMovie(std::string title) {
       }
       prev = temp;
       temp = temp->next;
-    } 
+    }
   }
 }
