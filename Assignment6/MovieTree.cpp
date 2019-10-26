@@ -1,5 +1,6 @@
 #include "MovieTree.hpp"
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include<fstream>
 #include <sstream>
@@ -11,15 +12,15 @@ using namespace std;
 // MovieNode: node struct that will be stored in the MovieTree BST
 
 //Helper functions:
-vector<float> getAverageRating(MovieNode*node, vector<float> ratings) {
+void getAverageRating(MovieNode*node, int& count, float &ratings) {
 
-  if (node->left != NULL && node->right != NULL) {
-    ratings = getAverageRating(node->left, ratings);
-    ratings = getAverageRating(node->right, ratings);
-  } 
+  if (node == NULL) return;
 
-  ratings.push_back(node->rating);
-  return ratings;
+  count++;
+  getAverageRating(node->left, count, ratings);
+  getAverageRating(node->right, count, ratings);
+
+  ratings += node->rating;
 }
 void preOrderQuery(MovieNode *node, float rating, int year) {
   if(node != NULL) {
@@ -95,17 +96,15 @@ void MovieTree::addMovieNode(int ranking, string title, int year, float rating) 
     parent->right = newM;
   }
   else {
-    parent->left - newM;
+    parent->left = newM;
   }
 }
 
 void MovieTree::findMovie(string title) {
   //write your code
   MovieNode *current = root;
-  MovieNode *parent = NULL;
 
   while(current != NULL) {
-    parent = current;
     if (title.compare(current->title) == 0) {
       break;
     }
@@ -147,13 +146,10 @@ void MovieTree::averageRating() {
     return;
   }
 
-  vector<float> ratings;
-  ratings = getAverageRating(root, ratings);
   float average = 0;
-  for (auto i: ratings) {
-    average += i;
-  }
-  average = average / ratings.size();
+  int count = 0;
+  getAverageRating(root, count, average);
+  average = average / count;
 
   cout << "Average rating:" << average << endl;
 

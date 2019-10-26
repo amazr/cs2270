@@ -6,11 +6,9 @@
 
 void printMenu() {
     std::cout << "======Main Menu======" << std::endl;
-    std::cout << "1. Find a movie" << std::endl;
-    std::cout << "2. Query movies" << std::endl;
-    std::cout << "3. Print the inventory" << std::endl;
-    std::cout << "4. Average Rating of movies" << std::endl;
-    std::cout << "5. Quit" << std::endl;
+    std::cout << "1. Print the inventory" << std::endl;
+    std::cout << "2. Delete a movie" << std::endl;
+    std::cout << "3. Quit" << std::endl;
 }
 
 int main(int argc, char** argv) {
@@ -43,45 +41,32 @@ int main(int argc, char** argv) {
         std::getline(ss, token, ',');   //token = rating
         std::string rating = token;
 
-        mt.addMovieNode(stoi(ranking), title, stoi(year), stof(rating));
+        mt.addMovie(stoi(ranking), title, stoi(year), stof(rating));
     }
 
     while(true) {
         int option;
         printMenu();
         std::cin >> option;
+        std::cin.ignore();
         switch(option) {
-            case 1: {//Find movie
-                cin.ignore();
-                std::string title;
-                std::cout << "Enter title:" << std::endl;
-                getline(cin, title);
-                mt.findMovie(title);
-                break;
-            }
-            case 2: {//Query movie
-                int minYear;
-                float minRating;
-                std::cout << "Enter minimum rating:" << std::endl;
-                std::cin >> minRating;
-                std::cout << "Enter minimum year:" << std::endl;
-                std::cin >> minYear;
-                mt.queryMovies(minRating, minYear);
-                break;
-            }
-            case 3: {//Print inventory
+            case 1: {//Print the inventory
                 mt.printMovieInventory();
                 break;
             }
-            case 4: {//Average rating of movies
-                mt.averageRating();
+            case 2: {//Delete a movie
+                std::string title;
+                std::cout << "Enter a movie title:" << std::endl;
+                getline(std::cin, title);
+                mt.deleteMovie(title);
                 break;
             }
-            case 5: {//quit
-                std::cout << "Goodbye!" << std::endl; 
+            case 3: {//Quit
+                std::cout << "Goodbye!" << std::endl;   
                 return 0;
-                break;
+                break;  
             }
+
         }
     }
 }
