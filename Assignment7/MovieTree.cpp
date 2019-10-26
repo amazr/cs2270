@@ -24,6 +24,14 @@ void printInOrder(TreeNode *node) {
   }
 }
 
+TreeNode* getMinValueNode(TreeNode* currNode){
+
+    if(currNode->leftChild == NULL){
+      return currNode;
+    }
+    return getMinValueNode(currNode->leftChild);
+}
+
 void deleteTree(TreeNode *node) { //Delete the entire tree
   if (node == NULL) return;
 
@@ -33,6 +41,54 @@ void deleteTree(TreeNode *node) { //Delete the entire tree
   }
 
   delete node;
+}
+
+TreeNode* deleteNode(TreeNode* currNode, char value)
+{
+
+  if(currNode == NULL)
+  {
+    return NULL;
+  }
+  else if(value < currNode->titleChar)
+  {
+    currNode->leftChild = deleteNode(currNode->leftChild, value);
+  }
+  else if(value > currNode->titleChar)
+  {
+    currNode->rightChild = deleteNode(currNode->rightChild, value);
+  }
+  // We found the node with the value
+  else
+  {
+    //TODO Case : No child
+    if(currNode->leftChild == NULL && currNode->rightChild == NULL)
+    {
+        currNode = NULL;
+    }
+    //TODO Case : Only right child
+    else if(currNode->leftChild == NULL)
+    {
+        currNode->titleChar = currNode->rightChild->titleChar;
+        currNode->rightChild = NULL;
+    }
+    //TODO Case : Only left child
+    else if(currNode->rightChild == NULL)
+    {
+        currNode->titleChar = currNode->leftChild->titleChar;
+        currNode->leftChild = NULL;
+    }
+    //TODO Case: Both left and right child
+    else
+    {
+        //Replace with Minimum from right subtree
+        currNode->titleChar = getMinValueNode(currNode->rightChild)->titleChar;
+        currNode->head = getMinValueNode(currNode->rightChild)->head;
+        currNode->rightChild = deleteNode(currNode->rightChild, currNode->titlrChar);
+    }
+
+  }
+return currNode;
 }
 
 
@@ -154,6 +210,7 @@ void MovieTree::deleteMovie(std::string title) {
       if (temp->title == title) { //Movie found
         if (prev == NULL) {
           current->head = NULL;
+          root=deleteNode(root,current->titleChar);
           delete temp;
           return;
         }
