@@ -35,10 +35,21 @@ TreeNode* getMinValueNode(TreeNode* currNode){
 void deleteTree(TreeNode *node) { //Delete the entire tree
   if (node == NULL) return;
 
-  if (node->leftChild != NULL && node->rightChild != NULL) {
+  if (node->leftChild != NULL) {
     deleteTree(node->leftChild);
+  }
+  if (node->rightChild != NULL) {
     deleteTree(node->rightChild);
   }
+
+  LLMovieNode* current = node->head;  
+  LLMovieNode* next;  
+  
+  while (current != NULL) {  
+    next = current->next;  
+    delete current;  
+    current = next;  
+  }  
 
   delete node;
 }
@@ -64,26 +75,41 @@ TreeNode* deleteNode(TreeNode* currNode, char value)
     //TODO Case : No child
     if(currNode->leftChild == NULL && currNode->rightChild == NULL)
     {
-        currNode = NULL;
+        delete currNode;
+        return NULL;
+
     }
     //TODO Case : Only right child
     else if(currNode->leftChild == NULL)
     {
         currNode->titleChar = currNode->rightChild->titleChar;
-        currNode->rightChild = NULL;
+        currNode->head = currNode->rightChild->head;
+        if (currNode->rightChild->rightChild == NULL) {
+          currNode->rightChild = NULL;
+        }
+        else {
+          currNode->rightChild = currNode->rightChild->rightChild;
+        }
     }
     //TODO Case : Only left child
     else if(currNode->rightChild == NULL)
     {
         currNode->titleChar = currNode->leftChild->titleChar;
-        currNode->leftChild = NULL;
+        currNode->head = currNode->leftChild->head;
+        if (currNode->leftChild->leftChild == NULL) {
+          currNode->leftChild = NULL;
+        }
+        else {
+          currNode->leftChild = currNode->leftChild->leftChild;
+        }
     }
     //TODO Case: Both left and right child
     else
     {
         //Replace with Minimum from right subtree
         currNode->titleChar = getMinValueNode(currNode->rightChild)->titleChar;
-        currNode->rightChild = deleteNode(currNode->rightChild, currNode->titlrChar);
+        currNode->head = getMinValueNode(currNode->rightChild)->head;
+        currNode->rightChild = deleteNode(currNode->rightChild, currNode->titleChar);
     }
 
   }
@@ -147,30 +173,35 @@ void MovieTree::addMovie(int ranking, string title, int year, float rating) {
     else {
       LLMovieNode *temp = current->head;
       LLMovieNode *prev = NULL;
+      bool early = false;
 
-      while(temp->next != NULL) {
-        if (temp->title.compare(title) > 0) {
+      while (temp != NULL) {
+        if (temp->title.compare(title) < 0) { //if the current nodes title comes before the title alphabetically
+          cout << temp->title << " comes before " << title << endl;
+          early = true;
           break;
         }
         prev = temp;
+        if (temp->next == NULL) {
+          break;
+        }
         temp = temp->next;
       }
+
       LLMovieNode *nn = new LLMovieNode(ranking, title, year, rating);
-      if (prev == NULL) {
-        current->head = nn;
-        current->head->next = temp;
+      if (early) {
+        cout << "adding early " << title << endl;
+        nn->next = temp->next;
+        temp->next = nn;
       }
       else {
-        if (temp->title.compare(title) > 0) {
-            prev->next = nn;
-            nn->next = temp;
-        }
-        else {
-            temp->next = nn;
-        }
+        cout << "adding " << title << endl;
+        nn->next = current->head;
+        current->head = nn;
       }
-    }
 
+    }
+    delete newNode;
     return;
   }
   else {
@@ -208,10 +239,15 @@ void MovieTree::deleteMovie(std::string title) {
     while(temp != NULL) {
       if (temp->title == title) { //Movie found
         if (prev == NULL) {
-          current->head = NULL;
-          root=deleteNode(root,current->titleChar);
-          delete temp;
-          return;
+          if (temp->next == NULL) {
+            current->head = NULL;
+            root=deleteNode(root,current->titleChar);
+            delete temp;
+            return;
+          }
+          else {
+            current->head = temp->next;
+          }
         }
         else {
           if (temp->next == NULL) {
@@ -228,5 +264,4 @@ void MovieTree::deleteMovie(std::string title) {
       temp = temp->next;
     } 
   }
-  cout << "Movie: " << title << " not found, cannot delete." << endl;
 }
